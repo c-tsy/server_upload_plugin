@@ -15,5 +15,6 @@
     "@ctsy/crypto": "^1.0.5",
     "@ctsy/server_plugin": "^1.0.0",
     "md5-file": "^4.0.0"
-  }
+  },
+  "version": "0.0.1"
 }
