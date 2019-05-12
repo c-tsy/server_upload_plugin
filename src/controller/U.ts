@@ -90,6 +90,7 @@ export default class U extends BaseController{
         if (md5s.length>0) {                
             let adds = [];
             let existed = await this.M(Models.Store).where({MD5:{in:md5s}}).getFields('MD5,SID',true)
+            let myexisted = await this.M(Models.Files).where({MD5:{in:md5s},CUID:UID}).getFields('MD5,FID,SID',true)
             //TODO 更新Store的引用次数
             let countrs = {};
             for (let i = 0; i < success.length; i++){
@@ -106,8 +107,13 @@ export default class U extends BaseController{
                 add.Status = 1;
                 add.MD5 = file.MD5;
                 add.Field = file.fieldName;
-                // add.SID=
-                if (existed[file.MD5]) {
+                if (myexisted[file.MD5]) {
+                    add.FID = myexisted[file.MD5].FID;
+                    add.SID = myexisted[file.MD5].SID;
+                    rs[file.fieldName] = add;
+                    continue;
+                }
+                else if (existed[file.MD5]) {
                     //系统已存在该文件，直接写关联数据就行
                     add.SID = existed[file.MD5].SID;
                 } else {
