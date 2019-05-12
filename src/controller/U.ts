@@ -89,6 +89,7 @@ export default class U extends BaseController{
             let adds = [];
             let existed = await this.M(Models.Store).where({MD5:{in:md5s}}).getFields('MD5,SID',true)
             //TODO 更新Store的引用次数
+            let countrs = {};
             for (let i = 0; i < success.length; i++){
                 let file = success[i];
                 let add = new Files()
@@ -137,6 +138,9 @@ export default class U extends BaseController{
                     rs[adds[i].Field].FID = r[i].FID;
                 }
             }
+            // if (countrs) {
+            //     await this.M(Models.Store).
+            // }
         }
         // debugger
         return rs;
@@ -147,7 +151,8 @@ export default class U extends BaseController{
     async c() {
         return {
             Max: config.MaxSize,
-            
+            Exts: config.AllowExt,
+            Anonymous: config.AllowAnonymous,            
         }
     }
 }
