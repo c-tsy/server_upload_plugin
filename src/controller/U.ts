@@ -5,10 +5,12 @@ import { Models } from '../iface/models';
 import { UploadConfig } from '../iface/upload';
 import * as moment from 'moment';
 import Files from '../class/Files';
-import { stat } from 'mz/fs';
+import { stat, exists } from 'mz/fs';
 import Store from '../class/Store';
 import Local from '../drivers/Local';
 import { md5_file } from '../utils';
+import { createReadStream } from 'fs';
+import * as mime from 'mime'
 export default class U extends BaseController{
     _prefix='upload_'
     /**
@@ -154,5 +156,35 @@ export default class U extends BaseController{
             Exts: config.AllowExt,
             Anonymous: config.AllowAnonymous,            
         }
+    }
+    async r() {
+        // 读取文件
+        // 通过md5或者FID读取文件
+        let sp = this._ctx.path.split('/')
+        if (sp[4] && sp[4].length == 32) {
+            //MD5模式
+            //TODO 鉴权，是否允许该用户访问该资源
+            let p = await this.M(Models.Store).where({ MD5: sp[4] }).getFields('Path')
+            if (p && await exists(p)) {
+                let stats = await stat(p);
+                this._config.sendFile = true;
+                this._ctx.set('Content-Type', mime.getType(extname(p).substr(1)));
+                this._ctx.set('Content-Length', stats.size);
+                this._ctx.set('Last-Modified', stats.mtimeMs);
+                this._ctx.set('Expire', new Date(moment().add(7, 'day').format('YYYY-MM-DD HH:mm:ss')).toUTCString());
+                if (this._ctx.headers['if-modified-since'] == stats.mtimeMs) {
+                    this._ctx.status = 304;
+                    this._ctx.body=''
+                    return;
+                } else {                    
+                    return this._ctx.body = createReadStream(p);
+                }
+            }
+        } else if (sp[4] && Number(sp[4]) > 0) {
+            
+        } else {
+            throw new Error(config.Errors.FILE_NOT_EXIST);
+        }
+        return ''
     }
 }

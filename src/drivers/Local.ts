@@ -20,7 +20,7 @@ export default class Local {
                 let read = fs.createReadStream(d.path);
                 read.on('end', () => {
                     fs.unlink(d.path, () => { })
-                    resolve(this.config.Domain + key)
+                    resolve(key)
                 })
                 read.pipe(write)
             } catch (error) {

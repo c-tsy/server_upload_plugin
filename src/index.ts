@@ -15,7 +15,9 @@ class Config{
         DENY_TYPE: '不允许上传该类型文件',
         DRIVER_ERROR: '驱动错误',
         UPLOAD_ERROR: '保存错误',
-        STORE_ERROR:'存储错误'
+        STORE_ERROR:'存储错误',
+        FILE_NOT_EXIST:'文件不存在',
+        FILE_FORBIDDEN:'禁止访问',
     }
     /**
      * 默认上传处理方式
