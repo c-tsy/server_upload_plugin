@@ -35,6 +35,7 @@ create index status on upload_drivers
 create table upload_files
 (
    FID                  bigint unsigned not null auto_increment,
+   SID                  bigint unsigned not null,
    Name                 char(250) not null,
    Ext                  char(20) not null,
    Size                 bigint not null,
