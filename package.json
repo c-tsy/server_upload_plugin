@@ -16,5 +16,5 @@
     "@ctsy/server_plugin": "^1.0.0",
     "md5-file": "^4.0.0"
   },
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
